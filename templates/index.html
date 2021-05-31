@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Theme Simply Me</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <style>
+  .bg-1 {
+    background-color: #1abc9c; /* Green */
+    color: #ffffff;
+  }
+  .container-fluid {
+    padding-top: 70px;
+    padding-bottom: 70px;
+  }
+  </style>  
+</head>
+<body>
+
+<div class="container-fluid bg-1 text-center">
+    <h3>Who Am I?</h3>
+    <h3>Lets analyse "toss a ball into basket" game</h3>  
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <!-- Do something with the message -->
+                <div id="alert">
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    <strong>ERROR: </strong> {{ message }} 
+                </div>
+
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if obj.is_video_display %}
+    <div > 
+        <video width="320" height="240" controls>
+        <source src={{ url_for('get_file', filename=obj.video) }} alt="User Video" type="video/mp4">
+        Your browser does not support the video tag.
+        </video>
+        <img src={{ url_for('analyze', filename=obj.video) }}>
+    </div>
+    {% else %}
+      <form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" name="video" id="video" accept=".mp4">
+          <label class="custom-file-label" for="video">Choose video</label>
+        </div>
+        <div class="mt-3">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    {% endif %}
+</div>
+
+</body>
+
+<script>
+  // Add the following code if you want the name of the file appear on select
+  $(".custom-file-input").on("change", function() {
+    var fileName = $(this).val().split("\\").pop();
+    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+  });
+ </script>
+</html>
