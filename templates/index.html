@@ -45,7 +45,11 @@
         Your browser does not support the video tag.
         </video>
         <br>Result<br>
-        <img src={{ url_for('analyze', filename=obj.video) }} width="320" height="240">
+        <video width="320" height="240" controls>
+        <source src={ url_for('analyze', filename=obj.video) }} alt="User Video" type="video/mp4">
+        Your browser does not support the video tag.
+        </video>
+        <!-- <img src={{ url_for('analyze', filename=obj.video) }} width="320" height="240"> -->
     </div>
     {% else %}
       <form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
