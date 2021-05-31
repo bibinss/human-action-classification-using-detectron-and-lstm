@@ -5,6 +5,10 @@ from pytorch_lightning.callbacks import EarlyStopping
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks import LearningRateMonitor
 
+import torch
+import torch.nn as nn
+from torch.utils.data import Dataset, DataLoader
+
 n_steps = 32 # 32 timesteps per series
 
 class PoseDataset(Dataset):
