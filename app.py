@@ -3,7 +3,7 @@ import sys
 import time
 
 from flask import Flask
-from flask import render_template, request, send_from_directory, flash, url_for
+from flask import render_template, Response, request, send_from_directory, flash, url_for
 from flask import current_app as app
 from werkzeug.utils import secure_filename
 
