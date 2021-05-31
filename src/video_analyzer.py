@@ -1,6 +1,6 @@
 import cv2
-import npath
-from utils import filter_persons, draw_keypoints
+import ntpath
+from .utils import filter_persons, draw_keypoints
 
 import numpy as np
 import torch
@@ -38,10 +38,11 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
         #     continue
         # skip_count = 0
         outputs = pose_detector(frame)
+        img = frame.copy()
         persons, pIndicies = filter_persons(outputs)
         if len(persons) >= 1:
             p = persons[0]
-            img = draw_keypoints(p, frame)
+            draw_keypoints(p, img)
             p = p[coco_mapping]
 
             if (len(p) != 17):
@@ -75,10 +76,11 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
                 print("label ", label)
                 cv2.putText(img, 'Action: {}'.format(label),
                     (int(width-300), 50), cv2.FONT_HERSHEY_COMPLEX, 0.7, (102, 255, 255), 2)
-                
-                out_frame = cv2.imencode('.jpg', img)[1].tobytes()
-                result = (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + out_frame + b'\r\n')
-                yield result
 
+                
+        out_frame = cv2.imencode('.jpg', img)[1].tobytes()
+        result = (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + out_frame + b'\r\n')
+        yield result
+        
         vid_writer.write(img)
 

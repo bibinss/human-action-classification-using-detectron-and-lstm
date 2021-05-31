@@ -14,8 +14,7 @@ def filter_persons(outputs):
         persons[x] = desired_kp
     return (persons, p_indicies)
 
-def drawKeypoints(person, im):
-  img = im.copy()
+def draw_keypoints(person, img):
   l_eye = person[1]
   r_eye = person[2]
   l_ear = person[3]
