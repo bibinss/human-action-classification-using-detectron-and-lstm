@@ -88,8 +88,9 @@ def get_file(filename):
 
 @app.route('/analyze/<filename>')
 def analyze(filename):
-    file = analyse_video(pose_detector, lstm_classifier, filename)
-    return send_from_directory(app.config['UPLOAD_FOLDER'], file)
+    # file = analyse_video(pose_detector, lstm_classifier, filename)
+    # return send_from_directory(app.config['UPLOAD_FOLDER'], file)
+    return Response(analyse_video(pose_detector, lstm_classifier, filename), mimetype= 'text/event-stream')
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=True)

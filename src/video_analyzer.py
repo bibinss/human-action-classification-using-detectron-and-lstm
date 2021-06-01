@@ -24,10 +24,12 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     print("fps ", fps)
     print("width height", width, height)
+    tot_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    print("tot_frames", tot_frames)
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     file_name = ntpath.basename(video_path)
-    vid_writer = cv2.VideoWriter('/content/out_res1_{}'.format(file_name), fourcc, 30, (width, height))
-    skip_count = 0
+    vid_writer = cv2.VideoWriter('/content/res_{}'.format(file_name), fourcc, 30, (width, height))
+    counter = 0
     window = []
     while True:
         ret, frame = cap.read()
@@ -37,6 +39,7 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
         # if(skip_count > 2):
         #     continue
         # skip_count = 0
+        counter += 1
         outputs = pose_detector(frame)
         img = frame.copy()
         persons, pIndicies = filter_persons(outputs)
@@ -76,11 +79,15 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
                 print("label ", label)
                 cv2.putText(img, 'Action: {}'.format(label),
                     (int(width-300), 50), cv2.FONT_HERSHEY_COMPLEX, 0.7, (102, 255, 255), 2)
-
                 
-        out_frame = cv2.imencode('.jpg', img)[1].tobytes()
-        result = (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + out_frame + b'\r\n')
-        yield result
+        # out_frame = cv2.imencode('.jpg', img)[1].tobytes()
+        # result = (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + out_frame + b'\r\n')
+        # yield result        
         
         vid_writer.write(img)
+        perc = int(counter/tot_frames)
+        print("perc ", perc)
+        yield "data:" + str(perc) + "\n\n"
+
+    #return 'out_res_{}'.format(file_name)
 
