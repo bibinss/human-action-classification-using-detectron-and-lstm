@@ -100,7 +100,7 @@ def get_file(filename):
 
 @app.route('/analyzed_files/<filename>')
 def get_analyzed_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], "res_{}".format(filename))
+    return send_from_directory(app.config['UPLOAD_FOLDER'], "res_{}".format(filename), as_attachment=True)
 
 @app.route('/result_video/<filename>')
 def get_result_video(filename):
