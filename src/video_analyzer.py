@@ -28,7 +28,7 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
     print("tot_frames", tot_frames)
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     file_name = ntpath.basename(video_path)
-    vid_writer = cv2.VideoWriter('/content/res_{}'.format(file_name), fourcc, 30, (width, height))
+    vid_writer = cv2.VideoWriter('res_{}'.format(file_name), fourcc, 30, (width, height))
     counter = 0
     window = []
     while True:
