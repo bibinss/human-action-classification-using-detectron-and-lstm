@@ -88,7 +88,7 @@ def get_file(filename):
 
 @app.route('/analyzed_files/<filename>')
 def get_analyzed_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], "res_{}".format(filename))
 
 @app.route('/analyze/<filename>')
 def analyze(filename):
