@@ -58,7 +58,7 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
             else:                
                 #convert input to tensor
                 model_input = torch.Tensor(np.array(window, dtype=np.float32))
-                model_input = torch.unsqueeze(temp, dim=0)
+                model_input = torch.unsqueeze(model_input, dim=0)
                 y_pred = lstm_classifier(model_input)
                 prob = F.softmax(y_pred, dim=1)            
                 # get the max probability
