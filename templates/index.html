@@ -48,11 +48,12 @@
       if(event.data == 100){
         source.close()
         $('#result').css("display","block")
-        $('#result div').prepend('<img src="{{ url_for('get_result_video', filename=obj.video) }}" />') 
+        $('#result div').prepend('<img src="{{ url_for('get_result_video', filename=obj.video) }}" width="480" height="320"/>') 
       }
     }
     </script>
     <div > 
+        Input video <br/>
         <video width="480" height="320" controls>
         <source src={{ url_for('get_file', filename=obj.video) }} alt="User Video" type="video/mp4">
         Your browser does not support the video tag.
@@ -71,15 +72,35 @@
         
     </div>
     {% else %}
+      <table>
+      <tr>
+      <td>
       <form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
         <div class="custom-file">
           <input type="file" class="custom-file-input" name="video" id="video" accept=".mp4">
-          <label class="custom-file-label" for="video">Choose video</label>
+          <label class="custom-file-label" for="video">Choose video to analyse</label>
         </div>
         <div class="mt-3">
           <button type="submit" class="btn btn-primary">Submit</button>
         </div>
       </form>
+      </td>
+      <td>
+        OR
+      </td>
+      <td>
+        <form method=POST enctype=multipart/form-data action="{{ url_for('sample') }}">
+          <video width="480" height="320" controls>
+            <source src={{ url_for('get_file', filename=obj.video) }} alt="User Video" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </td>
+      </tr>
+      </table>
     {% endif %}
 </div>
 

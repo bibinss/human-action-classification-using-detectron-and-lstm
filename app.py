@@ -54,7 +54,13 @@ def cleanString(v: str):
         out_str = " ".join(out_str)
     return out_str
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
+def index():
+    obj = DataObject
+    obj.video = "sample_video.mp4"
+    return render_template('/index.html', obj=obj)
+
+@app.route('/upload', methods=['POST'])
 def upload():
     obj = DataObject
     obj.is_video_display = False
@@ -71,7 +77,6 @@ def upload():
             video_file.save(filepath)
             obj.video = filename
             obj.is_video_display = True
-            obj.is_predicted = False
             return render_template('/index.html', obj=obj)
         else:
             if video_file.filename:
@@ -80,6 +85,13 @@ def upload():
                 msg = "Please select a video file"
             flash(msg)
         return render_template('/index.html', obj=obj)
+    return render_template('/index.html', obj=obj)
+
+@app.route('/sample', methods=['POST'])
+def sample():
+    obj = DataObject
+    obj.is_video_display = True
+    obj.video = "sample_video.mp4"
     return render_template('/index.html', obj=obj)
 
 @app.route('/files/<filename>')
