@@ -48,7 +48,8 @@
       if(event.data == 100){
         source.close()
         $('#result').css("display","block")
-        $('#res_video').load()
+        $('#res_img').css("display","block")
+        // $('#res_video').load()
       }
     }
     </script>
@@ -65,10 +66,11 @@
         </div>
         <div id="result" style="display:none">
           <br>Video Analysis Result<br>
-          <video id="res_video" width="480" height="320" controls>
+          <!-- <video id="res_video" width="480" height="320" controls>
           <source src={{ url_for('get_analyzed_file', filename=obj.video) }} alt="User Video" type="video/mp4">
           Your browser does not support the video tag.
-          </video>
+          </video> -->
+          <img id="res_img" src="{{ url_for('stream_video', filename=obj.video) }}" style="display:none">
         </div>
         <!-- <img src={{ url_for('analyze', filename=obj.video) }} width="320" height="240"> -->
     </div>

@@ -90,4 +90,30 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
         yield "data:" + str(perc) + "\n\n"
 
     #return 'out_res_{}'.format(file_name)
+    print("finished video analysis")
 
+
+
+def stream_video(video_path):
+    cap = cv2.VideoCapture(video_path)
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    print("fps ", fps)
+    print("width height", width, height)
+    tot_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    print("tot_frames", tot_frames)
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    file_name = ntpath.basename(video_path)
+    while True:
+        ret, frame = cap.read()
+        if ret == False:
+          break        
+                
+        out_frame = cv2.imencode('.jpg', frame)[1].tobytes()
+        result = (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + out_frame + b'\r\n')
+        yield result        
+        
+
+    #return 'out_res_{}'.format(file_name)
+    print("finished video streaming")

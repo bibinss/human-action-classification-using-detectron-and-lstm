@@ -8,7 +8,7 @@ from flask import current_app as app
 from werkzeug.utils import secure_filename
 
 from src.lstm import ActionClassificationLSTM
-from src.video_analyzer import analyse_video
+from src.video_analyzer import analyse_video, stream_video
 
 # import some common detectron2 utilities
 from detectron2 import model_zoo
@@ -89,6 +89,12 @@ def get_file(filename):
 @app.route('/analyzed_files/<filename>')
 def get_analyzed_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], "res_{}".format(filename))
+
+@app.route('/stream_video/<filename>')
+def stream_video(filename):
+    stream = stream_video("{}res_{}".format(app.config['UPLOAD_FOLDER'], filename))
+    return Response(stream,
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/analyze/<filename>')
 def analyze(filename):
