@@ -1,3 +1,4 @@
+import numpy as np
 import torch.optim as optim
 import torchmetrics
 import pytorch_lightning as pl
@@ -32,8 +33,8 @@ class PoseDataModule(pl.LightningDataModule):
         self.y_train_path = self.data_root + "Y_train.txt"
         self.y_test_path = self.data_root + "Y_test.txt"
     
-    # filtering out cordinated of neck since we are using detectron2 for pose estimation.
-    # detectron produces 17 key points while openpose prodices 18 key points. 
+    # filtering out cordinate of neck joint from the training/validation set originally generated using OpenPose.
+    # Detectron2 produces only 17 key points while OpenPose produces 18 key points. 
     def without_cordinates_for_neck(self, row):
         row = row.split(',')
         temp = row[:2] + row[4:]

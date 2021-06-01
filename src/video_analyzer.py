@@ -71,7 +71,7 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
                 label = LABELS[pred_index.numpy()[0]]
                 print("Label detected ", label)
                 cv2.putText(img, 'Action: {}'.format(label),
-                    (int(width-350), 50), cv2.FONT_HERSHEY_COMPLEX, 0.9, (102, 255, 255), 2)    
+                    (int(width-400), height-50), cv2.FONT_HERSHEY_COMPLEX, 0.9, (102, 255, 255), 2)    
         vid_writer.write(img)
         percentage = int(counter*100/tot_frames)
         yield "data:" + str(percentage) + "\n\n"
