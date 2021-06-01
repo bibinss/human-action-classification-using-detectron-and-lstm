@@ -90,8 +90,8 @@ def get_file(filename):
 def get_analyzed_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], "res_{}".format(filename))
 
-@app.route('/stream_video/<filename>')
-def stream_video(filename):
+@app.route('/result_video/<filename>')
+def result_video(filename):
     stream = stream_video("{}res_{}".format(app.config['UPLOAD_FOLDER'], filename))
     return Response(stream,
                     mimetype='multipart/x-mixed-replace; boundary=frame')

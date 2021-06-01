@@ -70,7 +70,7 @@
           <source src={{ url_for('get_analyzed_file', filename=obj.video) }} alt="User Video" type="video/mp4">
           Your browser does not support the video tag.
           </video> -->
-          <img id="res_img" src="{{ url_for('stream_video', filename=obj.video) }}" style="display:none">
+          <img id="res_img" src="{{ url_for('result_video', filename=obj.video) }}" style="display:none">
         </div>
         <!-- <img src={{ url_for('analyze', filename=obj.video) }} width="320" height="240"> -->
     </div>
