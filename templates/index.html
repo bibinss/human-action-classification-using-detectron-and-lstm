@@ -53,18 +53,18 @@
     }
     </script>
     <div > 
-        <video width="320" height="240" controls>
+        <video width="480" height="320" controls>
         <source src={{ url_for('get_file', filename=obj.video) }} alt="User Video" type="video/mp4">
         Your browser does not support the video tag.
         </video>
         <br>Result<br>
-        <div class="progress" style="width: 50%; margin: 50px;">
+        <div class="progress">
           <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
             <span class="progress-bar-label">0%</span>
           </div>
         </div>
-        <div id="result" display: none>
-          <video width="320" height="240" controls>
+        <div id="result" style="display:none">
+          <video width="480" height="320" controls>
           <source src={ url_for('get_file/res_', filename=obj.video) }} alt="User Video" type="video/mp4">
           Your browser does not support the video tag.
           </video>

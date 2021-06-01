@@ -85,7 +85,7 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
         # yield result        
         
         vid_writer.write(img)
-        perc = int(counter/tot_frames)
+        perc = int(counter*100/tot_frames)
         print("perc ", perc)
         yield "data:" + str(perc) + "\n\n"
 
