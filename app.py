@@ -86,6 +86,10 @@ def upload():
 def get_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+@app.route('/analyzed_files/<filename>')
+def get_analyzed_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 @app.route('/analyze/<filename>')
 def analyze(filename):
     # file = analyse_video(pose_detector, lstm_classifier, filename)
