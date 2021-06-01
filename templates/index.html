@@ -50,7 +50,7 @@
         $('#result').css("display","block")        
         $('#result div').prepend('<img src="{{ url_for('get_result_video', filename=obj.video) }}" width="480" height="320"/>') 
         $('#result div').prepend('<br/>')
-        $('#result div').prepend('<a href="{{ url_for('analyzed_files', filename=obj.video) }}">Download Result File</a>')
+        $('#result div').prepend('<a href="{{ url_for('get_analyzed_file', filename=obj.video) }}">Download Result File</a>')
       }
     }
     </script>
@@ -74,7 +74,7 @@
         
     </div>
     {% else %}
-      <table>
+      <table class="table">
       <tr>
       <td>
       <form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
