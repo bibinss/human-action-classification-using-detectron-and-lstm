@@ -9,7 +9,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
-n_steps = 32 # 32 timesteps per series
+WINDOW_SIZE = 32 # 32 timesteps per series
 
 class PoseDataset(Dataset):
     def __init__(self, X, Y):
@@ -22,8 +22,6 @@ class PoseDataset(Dataset):
     def __getitem__(self, idx):
         return self.X[idx], self.y[idx]
 
-
-
 class PoseDataModule(pl.LightningDataModule):
     def __init__(self, data_root, batch_size):        
         super().__init__()        
@@ -34,11 +32,11 @@ class PoseDataModule(pl.LightningDataModule):
         self.y_train_path = self.data_root + "Y_train.txt"
         self.y_test_path = self.data_root + "Y_test.txt"
     
+    # filtering out cordinated of neck since we are using detectron2 for pose estimation.
+    # detectron produces 17 key points while openpose prodices 18 key points. 
     def without_cordinates_for_neck(self, row):
         row = row.split(',')
-        # print("row", row)
         temp = row[:2] + row[4:]
-        # print("temp", temp)
         return temp
 
     def load_X(self, X_path):
@@ -50,7 +48,7 @@ class PoseDataModule(pl.LightningDataModule):
             dtype=np.float32
         )
         file.close()
-        blocks = int(len(X_) / n_steps)
+        blocks = int(len(X_) / WINDOW_SIZE)
         X_ = np.array(np.split(X_,blocks))
         return X_     
 
@@ -103,12 +101,9 @@ class ActionClassificationLSTM(pl.LightningModule):
         self.save_hyperparameters()        
         self.lstm = nn.LSTM(input_features, hidden_dim, batch_first=True)
         self.linear = nn.Linear(hidden_dim, 6)
-        self.dropout = nn.Dropout(0.2)
 
     def forward(self, x):
-        #x = self.dropout(x)
         lstm_out, (ht, ct) = self.lstm(x)
-        #print("ht",len(ht[-1]))
         return self.linear(ht[-1])
     
     def training_step(self, batch, batch_idx):        
@@ -134,13 +129,10 @@ class ActionClassificationLSTM(pl.LightningModule):
         return {'loss': loss, 'result': dic}
 
     def training_epoch_end(self, training_step_outputs):
-        # training_step_outputs = [{'loss': loss, 'log': dic, 'progress_bar': dic}, ..., 
-        #{'loss': loss, 'log': dic, 'progress_bar': dic}]
         avg_train_loss = torch.tensor([x['result']['batch_train_loss'] for x in training_step_outputs]).mean()
         avg_train_acc = torch.tensor([x['result']['batch_train_acc'] for x in training_step_outputs]).mean()        
         self.log('train_loss', avg_train_loss, prog_bar=True)
-        self.log('train_acc', avg_train_acc, prog_bar=True)
-        # print('train_loss: {} train_acc:{}'.format(avg_train_loss, avg_train_acc))     
+        self.log('train_acc', avg_train_acc, prog_bar=True)        
     
     def validation_step(self, batch, batch_idx):        
         # get data and labels from batch
@@ -165,18 +157,14 @@ class ActionClassificationLSTM(pl.LightningModule):
         return dic
     
     def validation_epoch_end(self, validation_step_outputs):
-        # validation_step_outputs = [dic, ..., dic]
         avg_val_loss = torch.tensor([x['batch_val_loss'] for x in validation_step_outputs]).mean()
         avg_val_acc = torch.tensor([x['batch_val_acc'] for x in validation_step_outputs]).mean()
         self.log('val_loss', avg_val_loss, prog_bar=True)
         self.log('val_acc', avg_val_acc, prog_bar=True)
-        # print('val_loss: {} val_acc:{}'.format(avg_val_loss, avg_val_acc))
     
     def configure_optimizers(self):
         optimizer = optim.Adam(self.parameters(), lr = self.hparams.learning_rate)
         scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10, min_lr=1e-15, verbose=True)
         return {"optimizer": optimizer, 
                 "lr_scheduler": {"scheduler": scheduler, "interval": "epoch", "frequency": 1, "monitor": "val_loss"}}
-
-
 

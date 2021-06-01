@@ -6,7 +6,8 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-coco_mapping = [0, 6, 8, 10, 5, 7, 9, 12, 14, 16, 11, 13, 15, 2, 1, 4, 3]
+#lstm was traiend using the kepoints detected using openpose. so we need map detectron keypoints to openpose before feeding into lstm.
+openpose_coco_mapping = [0, 6, 8, 10, 5, 7, 9, 12, 14, 16, 11, 13, 15, 2, 1, 4, 3]
 WINDOW_SIZE = 32
 LABELS = {
     0:"JUMPING",
@@ -23,7 +24,7 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
     print("fps ", fps)
-    print("width height", width, height)
+    print("width height ", width, height)
     tot_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     print("tot_frames", tot_frames)
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
@@ -34,11 +35,7 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
     while True:
         ret, frame = cap.read()
         if ret == False:
-          break
-        # skip_count += 1
-        # if(skip_count > 2):
-        #     continue
-        # skip_count = 0
+          break        
         counter += 1
         outputs = pose_detector(frame)
         img = frame.copy()
@@ -46,8 +43,8 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
         if len(persons) >= 1:
             p = persons[0]
             draw_keypoints(p, img)
-            p = p[coco_mapping]
-
+            #map detectron key points to open pose keypoints
+            p = p[openpose_coco_mapping]
             if (len(p) != 17):
               print("len(persons[0]) ", len(p))
 
@@ -58,40 +55,27 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
                
             if len(window) < WINDOW_SIZE:
                 window.append(features)
-            else:
-                #print("window shape", window.shape)
-                temp = np.array(window, dtype=np.float32)
-                temp = torch.Tensor(temp)
-                temp = torch.unsqueeze(temp, dim=0)
-                #print("temp shape", temp.shape)
-                y_pred = lstm_classifier(temp)
-                #print("y_pred", y_pred)
-                prob = F.softmax(y_pred, dim=1)    
-        
+            else:                
+                #convert input to tensor
+                model_input = torch.Tensor(np.array(window, dtype=np.float32))
+                model_input = torch.unsqueeze(temp, dim=0)
+                y_pred = lstm_classifier(model_input)
+                prob = F.softmax(y_pred, dim=1)            
                 # get the max probability
-                pred_prob = prob.data.max(dim=1)[0]
-                
+                pred_prob = prob.data.max(dim=1)[0]                
                 # get the index of the max probability
                 pred_index = prob.data.max(dim=1)[1]  
+                #pop the first value and add the new entry in FIFO fashion, to have a sliding window of size 32.
                 window.pop(0)
                 window.append(features)
                 label = LABELS[pred_index.numpy()[0]]
-                print("label ", label)
+                print("Label detected ", label)
                 cv2.putText(img, 'Action: {}'.format(label),
-                    (int(width-300), 50), cv2.FONT_HERSHEY_COMPLEX, 0.7, (102, 255, 255), 2)
-                
-        # out_frame = cv2.imencode('.jpg', img)[1].tobytes()
-        # result = (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + out_frame + b'\r\n')
-        # yield result        
-        
+                    (int(width-350), 50), cv2.FONT_HERSHEY_COMPLEX, 0.9, (102, 255, 255), 2)    
         vid_writer.write(img)
-        perc = int(counter*100/tot_frames)
-        print("perc ", perc)
-        yield "data:" + str(perc) + "\n\n"
-
-    #return 'out_res_{}'.format(file_name)
+        percentage = int(counter*100/tot_frames)
+        yield "data:" + str(percentage) + "\n\n"
     print("finished video analysis")
-
 
 
 def stream_video(video_path):
@@ -108,12 +92,8 @@ def stream_video(video_path):
     while True:
         ret, frame = cap.read()
         if ret == False:
-          break        
-                
+          break                        
         out_frame = cv2.imencode('.jpg', frame)[1].tobytes()
         result = (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + out_frame + b'\r\n')
-        yield result        
-        
-
-    #return 'out_res_{}'.format(file_name)
+        yield result       
     print("finished video streaming")

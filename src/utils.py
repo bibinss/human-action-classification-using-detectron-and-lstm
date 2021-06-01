@@ -1,5 +1,8 @@
 import cv2
 
+WHITE_COLOR = (255,255,255)
+GREEN_COLOR = (0, 255, 0)
+
 def draw_line(image, p1, p2, color):
   cv2.line(image, p1, p2, color, thickness=2, lineType=cv2.LINE_AA)
 
@@ -33,33 +36,31 @@ def draw_keypoints(person, img):
   l_ankle = person[15]
   r_ankle = person[16]
   
-  draw_line(img, (l_shoulder[0], l_shoulder[1]), (l_elbow[0], l_elbow[1]), (0, 255, 0))
-  draw_line(img, (l_elbow[0], l_elbow[1]), (l_wrist[0], l_wrist[1]), (0, 255, 0))
-  draw_line(img, (l_shoulder[0], l_shoulder[1]), (r_shoulder[0], r_shoulder[1]), (0, 255, 0))
-  draw_line(img, (l_shoulder[0], l_shoulder[1]), (l_hip[0], l_hip[1]), (0, 255, 0))
-  draw_line(img, (r_shoulder[0], r_shoulder[1]), (r_hip[0], r_hip[1]), (0, 255, 0))
-  draw_line(img, (r_shoulder[0], r_shoulder[1]), (r_elbow[0], r_elbow[1]), (0, 255, 0))
-  draw_line(img, (r_elbow[0], r_elbow[1]), (r_wrist[0], r_wrist[1]), (0, 255, 0))
-  draw_line(img, (l_hip[0], l_hip[1]), (r_hip[0], r_hip[1]), (0, 255, 0))
-  draw_line(img, (l_hip[0], l_hip[1]), (l_knee[0], l_knee[1]), (0, 255, 0))
-  draw_line(img, (l_knee[0], l_knee[1]), (l_ankle[0], l_ankle[1]), (0, 255, 0))
-  draw_line(img, (r_hip[0], r_hip[1]), (r_knee[0], r_knee[1]), (0, 255, 0))
-  draw_line(img, (r_knee[0], r_knee[1]), (r_ankle[0], r_ankle[1]), (0, 255, 0))
+  draw_line(img, (l_shoulder[0], l_shoulder[1]), (l_elbow[0], l_elbow[1]), GREEN_COLOR)
+  draw_line(img, (l_elbow[0], l_elbow[1]), (l_wrist[0], l_wrist[1]), GREEN_COLOR)
+  draw_line(img, (l_shoulder[0], l_shoulder[1]), (r_shoulder[0], r_shoulder[1]), GREEN_COLOR)
+  draw_line(img, (l_shoulder[0], l_shoulder[1]), (l_hip[0], l_hip[1]), GREEN_COLOR)
+  draw_line(img, (r_shoulder[0], r_shoulder[1]), (r_hip[0], r_hip[1]), GREEN_COLOR)
+  draw_line(img, (r_shoulder[0], r_shoulder[1]), (r_elbow[0], r_elbow[1]), GREEN_COLOR)
+  draw_line(img, (r_elbow[0], r_elbow[1]), (r_wrist[0], r_wrist[1]), GREEN_COLOR)
+  draw_line(img, (l_hip[0], l_hip[1]), (r_hip[0], r_hip[1]), GREEN_COLOR)
+  draw_line(img, (l_hip[0], l_hip[1]), (l_knee[0], l_knee[1]), GREEN_COLOR)
+  draw_line(img, (l_knee[0], l_knee[1]), (l_ankle[0], l_ankle[1]), GREEN_COLOR)
+  draw_line(img, (r_hip[0], r_hip[1]), (r_knee[0], r_knee[1]), GREEN_COLOR)
+  draw_line(img, (r_knee[0], r_knee[1]), (r_ankle[0], r_ankle[1]), GREEN_COLOR)
         
-  cv2.circle(img, (l_eye[0], l_eye[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (r_eye[0], r_eye[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (l_wrist[0], l_wrist[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (r_wrist[0], r_wrist[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (l_shoulder[0], l_shoulder[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (r_shoulder[0], r_shoulder[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (l_elbow[0], l_elbow[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (r_elbow[0], r_elbow[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (l_hip[0], l_hip[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (r_hip[0], r_hip[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (l_knee[0], l_knee[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (r_knee[0], r_knee[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (l_ankle[0], l_ankle[1]), 4, (255,255,255), -1)
-  cv2.circle(img, (r_ankle[0], r_ankle[1]), 4, (255,255,255), -1)
-
-  return img
+  cv2.circle(img, (l_eye[0], l_eye[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (r_eye[0], r_eye[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (l_wrist[0], l_wrist[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (r_wrist[0], r_wrist[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (l_shoulder[0], l_shoulder[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (r_shoulder[0], r_shoulder[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (l_elbow[0], l_elbow[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (r_elbow[0], r_elbow[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (l_hip[0], l_hip[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (r_hip[0], r_hip[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (l_knee[0], l_knee[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (r_knee[0], r_knee[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (l_ankle[0], l_ankle[1]), 4, WHITE_COLOR, -1)
+  cv2.circle(img, (r_ankle[0], r_ankle[1]), 4, WHITE_COLOR, -1)
 

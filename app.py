@@ -21,30 +21,26 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = "secret key" 
 
 
-# detectron config
+# Detectron2 config
 start = time.time()
 cfg = get_cfg()
-# add project-specific config (e.g., TensorMask) here if you're not running a model in detectron2's core library
 cfg.merge_from_file(model_zoo.get_config_file("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml"))
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5  # set threshold for this model
 # Find a model from detectron2's model zoo. You can use the https://dl.fbaipublicfiles... url as well
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml")
 pose_detector = DefaultPredictor(cfg)
 model_load_done = time.time()
-print("model_load", model_load_done - start)
+print("Detectron model loaded in ", model_load_done - start)
 
-#lstm
+#Load pretrained LSTM model from checkpoint file
 lstm_classifier = ActionClassificationLSTM.load_from_checkpoint("models/saved_model.ckpt")
 lstm_classifier.eval()
-
 
 class DataObject():
     pass
 
-
 def checkFileType(f: str):
     return f.split('.')[-1] in ['mp4']
-
 
 def cleanString(v: str):
     out_str = v
@@ -109,9 +105,7 @@ def get_result_video(filename):
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/analyze/<filename>')
-def analyze(filename):
-    # file = analyse_video(pose_detector, lstm_classifier, filename)
-    # return send_from_directory(app.config['UPLOAD_FOLDER'], file)
+def analyze(filename):    
     return Response(analyse_video(pose_detector, lstm_classifier, filename), mimetype= 'text/event-stream')
 
 if __name__ == '__main__':
