@@ -34,8 +34,8 @@ class PoseDataModule(pl.LightningDataModule):
         self.y_test_path = self.data_root + "Y_test.txt"
 
     # filtering out cordinate of neck joint from the training/validation set originally generated using OpenPose.
-    # Detectron2 produces only 17 key points while OpenPose produces 18 key points.
-    def without_cordinates_for_neck(self, row):
+    # Detectron2 produces only 17 key points while OpenPose produces 18 (or more) key points.
+    def convert_to_detectron_format(self, row):
         row = row.split(',')
         temp = row[:2] + row[4:]
         return temp
@@ -44,7 +44,7 @@ class PoseDataModule(pl.LightningDataModule):
         file = open(X_path, 'r')
         X_ = np.array(
             [elem for elem in [
-                self.without_cordinates_for_neck(row) for row in file
+                self.convert_to_detectron_format(row) for row in file
             ]],
             dtype=np.float32
         )
