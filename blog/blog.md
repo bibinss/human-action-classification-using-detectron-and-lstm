@@ -71,7 +71,7 @@ Validation Accuracy <br/>
 ## Inferencing
 We have built an Flask based web application to run the Detectron and LSTM models in colab to process input videos. Use the [colab notebooks](https://github.com/bibinss/human-action-classification-using-detectron-and-lstm#colab-notebooks) mentioned in the codebase to run the application. 
 
-Below shows some results of application for the sample video provided.
+Below shows some results of application for the sample video provided. Action classification performed by the application is updated on the result video. See it on the below images on the bottom right of the images.
 <table><tr><td>
 <img src="res_1.png" alt="action classification" width="300"/>
 </td>
