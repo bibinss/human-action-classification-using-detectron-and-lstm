@@ -2,9 +2,6 @@ import numpy as np
 import torch.optim as optim
 import torchmetrics
 import pytorch_lightning as pl
-from pytorch_lightning.callbacks import EarlyStopping
-from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.callbacks import LearningRateMonitor
 
 import torch
 import torch.nn as nn
