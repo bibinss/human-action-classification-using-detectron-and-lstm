@@ -1,4 +1,5 @@
-import getopt, sys
+import getopt
+import sys
 from argparse import ArgumentParser
 
 import pytorch_lightning as pl
@@ -8,21 +9,23 @@ from pytorch_lightning.callbacks import LearningRateMonitor
 
 from .lstm import ActionClassificationLSTM, PoseDataModule
 
+
 def configuration_parser(parent_parser):
     parser = ArgumentParser(parents=[parent_parser], add_help=False)
-    #training batch size
+    # training batch size
     parser.add_argument('--batch_size', type=int, default=512)
-    #max training epochs = 400
+    # max training epochs = 400
     parser.add_argument('--epochs', type=int, default=400)
-    #training initial learning rate
+    # training initial learning rate
     parser.add_argument('--learning_rate', type=float, default=0.0001)
     # number of classes = number of human actions in the data set= 6
     parser.add_argument('--num_class', type=int, default=6)
     return parser
 
+
 def do_training_validation(argv):
 	try:
-      	opts, args = getopt.getopt(argv,"hd:",["data_root="])
+      	opts, args = getopt.getopt(argv, "hd:", ["data_root="])
    	except getopt.GetoptError:
       	print 'train.py -d <data_root>'
       	sys.exit(2)
