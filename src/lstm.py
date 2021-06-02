@@ -6,6 +6,7 @@ import pytorch_lightning as pl
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
+import torch.nn.functional as F
 
 WINDOW_SIZE = 32  # 32 timesteps per series
 
