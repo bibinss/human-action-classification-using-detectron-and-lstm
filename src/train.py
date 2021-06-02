@@ -24,15 +24,16 @@ def configuration_parser(parent_parser):
 
 
 def do_training_validation(argv):
-	try:
+    opts, args = getopt.getopt(argv, "hd:", ["data_root="])
+    try:
         opts, args = getopt.getopt(argv, "hd:", ["data_root="])
-   	except getopt.GetoptError:
-        print 'train.py -d <data_root>'
+    except getopt.GetoptError:
+        print ('train.py -d <data_root>')
         sys.exit(2)
 
     for opt, arg in opts:
         if opt == '-h':
-            print 'train.py -d <data_root>'
+            print ('train.py -d <data_root>')
             sys.exit()
         elif opt in ("-d", "--data_root"):
             data_root = arg
