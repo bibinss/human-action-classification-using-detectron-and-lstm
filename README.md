@@ -1,4 +1,4 @@
-# Human action classification using 2D pose estimation and LSTM with pytorch
+# Human action classification using Detectron2 based 2D pose estimation and LSTM
 This is an application built to show how human action classification can be done using 2D Pose Estimation and LSTM RNN machine learning models. 
 
 2D pose estimation is done using Facebook AI Research's Detectron2. 
