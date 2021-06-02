@@ -22,17 +22,17 @@ def configuration_parser(parent_parser):
 
 def do_training_validation(argv):
 	try:
-      opts, args = getopt.getopt(argv,"hd:",["data_root="])
+      	opts, args = getopt.getopt(argv,"hd:",["data_root="])
    	except getopt.GetoptError:
-      print 'train.py -d <data_root>'
-      sys.exit(2)
+      	print 'train.py -d <data_root>'
+      	sys.exit(2)
 
     for opt, arg in opts:
-      if opt == '-h':
-         print 'train.py -d <data_root>'
-         sys.exit()
-      elif opt in ("-d", "--data_root"):
-         data_root = arg
+      	if opt == '-h':
+         	print 'train.py -d <data_root>'
+         	sys.exit()
+      	elif opt in ("-d", "--data_root"):
+         	data_root = arg
    	print ('data_root is "', data_root)
 
     pl.seed_everything(21)    
