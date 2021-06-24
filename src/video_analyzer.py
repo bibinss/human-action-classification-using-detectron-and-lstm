@@ -2,6 +2,7 @@ import cv2
 import ntpath
 from .utils import filter_persons, draw_keypoints
 from .lstm import WINDOW_SIZE
+import time
 
 import numpy as np
 import torch
@@ -31,6 +32,7 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
         file_name), fourcc, 30, (width, height))
     counter = 0
     buffer_window = []
+    start = time.time()
     while True:
         ret, frame = cap.read()
         if ret == False:
@@ -68,7 +70,8 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
         vid_writer.write(img)
         percentage = int(counter*100/tot_frames)
         yield "data:" + str(percentage) + "\n\n"
-    print("finished video analysis")
+    analyze_done = time.time()
+    print("Video processing finished in ", analyze_done - start)
 
 def stream_video(video_path):
     cap = cv2.VideoCapture(video_path)
