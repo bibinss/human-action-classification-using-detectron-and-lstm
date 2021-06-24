@@ -7,7 +7,7 @@ from pytorch_lightning.callbacks import EarlyStopping
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks import LearningRateMonitor
 
-from .lstm import ActionClassificationLSTM, PoseDataModule
+from .lstm import ActionClassificationLSTM, PoseDataModule, WINDOW_SIZE
 
 
 def configuration_parser(parent_parser):
@@ -46,8 +46,9 @@ def do_training_validation(argv):
     # args = parser.parse_args()
     args, unknown = parser.parse_known_args()
     # print(args)
-    # init model    
-    model = ActionClassificationLSTM(34, 50, learning_rate=args.learning_rate)
+    # init model
+    hidden_dim = 50
+    model = ActionClassificationLSTM(WINDOW_SIZE, hidden_dim, learning_rate=args.learning_rate)
     data_module = PoseDataModule(data_root=data_root, batch_size=args.batch_size)    
     checkpoint_callback = ModelCheckpoint(save_top_k=1, monitor='val_loss')
     lr_monitor = LearningRateMonitor(logging_interval='step')    

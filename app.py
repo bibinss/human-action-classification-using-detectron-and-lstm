@@ -1,5 +1,4 @@
 import os
-import sys
 import time
 
 from flask import Flask
@@ -10,7 +9,7 @@ from werkzeug.utils import secure_filename
 from src.lstm import ActionClassificationLSTM
 from src.video_analyzer import analyse_video, stream_video
 
-# import some common detectron2 utilities
+# import some common Detectron2 utilities
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
@@ -24,19 +23,16 @@ app.secret_key = "secret key"
 # Detectron2 config
 start = time.time()
 cfg = get_cfg()
-cfg.merge_from_file(model_zoo.get_config_file(
-    "COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml"))
+cfg.merge_from_file(model_zoo.get_config_file("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml"))
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5  # set threshold for this model
 # Find a model from detectron2's model zoo. You can use the https://dl.fbaipublicfiles... url as well
-cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(
-    "COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml")
+cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml")
 pose_detector = DefaultPredictor(cfg)
 model_load_done = time.time()
 print("Detectron model loaded in ", model_load_done - start)
 
 # Load pretrained LSTM model from checkpoint file
-lstm_classifier = ActionClassificationLSTM.load_from_checkpoint(
-    "models/saved_model.ckpt")
+lstm_classifier = ActionClassificationLSTM.load_from_checkpoint("models/saved_model.ckpt")
 lstm_classifier.eval()
 
 
@@ -114,8 +110,7 @@ def get_analyzed_file(filename):
 def get_result_video(filename):
     stream = stream_video("{}res_{}".format(
         app.config['UPLOAD_FOLDER'], filename))
-    return Response(stream,
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(stream, mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/analyze/<filename>')

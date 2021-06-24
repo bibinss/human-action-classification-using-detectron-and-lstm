@@ -8,7 +8,7 @@ import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 import torch.nn.functional as F
 
-WINDOW_SIZE = 32  # 32 timesteps per series
+WINDOW_SIZE = 32  # 32 continuous frames
 
 
 class PoseDataset(Dataset):
@@ -33,7 +33,7 @@ class PoseDataModule(pl.LightningDataModule):
         self.y_train_path = self.data_root + "Y_train.txt"
         self.y_test_path = self.data_root + "Y_test.txt"
 
-    # filtering out cordinate of neck joint from the training/validation set originally generated using OpenPose.
+    # filtering out coordinate of neck joint from the training/validation set originally generated using OpenPose.
     # Detectron2 produces only 17 key points while OpenPose produces 18 (or more) key points.
     def convert_to_detectron_format(self, row):
         row = row.split(',')
@@ -42,21 +42,21 @@ class PoseDataModule(pl.LightningDataModule):
 
     def load_X(self, X_path):
         file = open(X_path, 'r')
-        X_ = np.array(
+        X = np.array(
             [elem for elem in [
                 self.convert_to_detectron_format(row) for row in file
             ]],
             dtype=np.float32
         )
         file.close()
-        blocks = int(len(X_) / WINDOW_SIZE)
-        X_ = np.array(np.split(X_, blocks))
+        blocks = int(len(X) / WINDOW_SIZE)
+        X_ = np.array(np.split(X, blocks))
         return X_
 
     # Load the networks outputs
     def load_y(self, y_path):
         file = open(y_path, 'r')
-        y_ = np.array(
+        y = np.array(
             [elem for elem in [
                 row.replace('  ', ' ').strip().split(' ') for row in file
             ]],
@@ -64,7 +64,7 @@ class PoseDataModule(pl.LightningDataModule):
         )
         file.close()
         # for 0-based indexing
-        return y_ - 1
+        return y - 1
 
     def prepare_data(self):
         pass
@@ -95,13 +95,14 @@ class PoseDataModule(pl.LightningDataModule):
         )
         return val_loader
 
+TOT_ACTION_CLASSES = 6
 
 class ActionClassificationLSTM(pl.LightningModule):
     def __init__(self, input_features, hidden_dim, learning_rate=0.001):
         super().__init__()
         self.save_hyperparameters()
         self.lstm = nn.LSTM(input_features, hidden_dim, batch_first=True)
-        self.linear = nn.Linear(hidden_dim, 6)
+        self.linear = nn.Linear(hidden_dim, TOT_ACTION_CLASSES)
 
     def forward(self, x):
         lstm_out, (ht, ct) = self.lstm(x)
