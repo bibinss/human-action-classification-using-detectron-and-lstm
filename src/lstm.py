@@ -41,7 +41,7 @@ class PoseDataModule(pl.LightningDataModule):
         # filtering out coordinate of neck joint from the training/validation set originally generated using OpenPose.
         temp = row[:2] + row[4:]
         # change to Detectron2 order of key points
-        temp = temp[openpose_to_detectron_mapping]
+        temp = [temp[i] for i in openpose_to_detectron_mapping]
         return temp
 
     def load_X(self, X_path):

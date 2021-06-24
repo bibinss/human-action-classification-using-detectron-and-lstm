@@ -7,11 +7,6 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-# lstm was trained using the keypoints detected using openpose.
-# So we need map detectron2 keypoints to OpenPose before feeding into lstm.
-openpose_coco_mapping = [0, 6, 8, 10, 5, 7,
-                         9, 12, 14, 16, 11, 13, 15, 2, 1, 4, 3]
-
 LABELS = {
     0: "JUMPING",
     1: "JUMPING_JACKS",
