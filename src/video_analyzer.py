@@ -47,8 +47,6 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
         if len(persons) >= 1:
             p = persons[0]
             draw_keypoints(p, img)
-            # map detectron key points to open pose key points order since we trained our LSTM using key points from OpenPose
-            p = p[openpose_coco_mapping]
 
             features = []
             for i, row in enumerate(p):

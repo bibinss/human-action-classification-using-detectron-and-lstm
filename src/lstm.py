@@ -22,6 +22,7 @@ class PoseDataset(Dataset):
     def __getitem__(self, idx):
         return self.X[idx], self.y[idx]
 
+openpose_to_detectron_mapping = [0, 1, 28, 29, 26, 27, 32, 33, 30, 31, 8, 9, 2, 3, 10, 11, 4, 5, 12, 13, 6, 7, 20, 21, 14, 15, 22, 23, 16, 17, 24, 25, 18, 19]
 
 class PoseDataModule(pl.LightningDataModule):
     def __init__(self, data_root, batch_size):
@@ -33,11 +34,14 @@ class PoseDataModule(pl.LightningDataModule):
         self.y_train_path = self.data_root + "Y_train.txt"
         self.y_test_path = self.data_root + "Y_test.txt"
 
-    # filtering out coordinate of neck joint from the training/validation set originally generated using OpenPose.
+
     # Detectron2 produces only 17 key points while OpenPose produces 18 (or more) key points.
     def convert_to_detectron_format(self, row):
         row = row.split(',')
+        # filtering out coordinate of neck joint from the training/validation set originally generated using OpenPose.
         temp = row[:2] + row[4:]
+        # change to Detectron2 order of key points
+        temp = temp[openpose_to_detectron_mapping]
         return temp
 
     def load_X(self, X_path):
