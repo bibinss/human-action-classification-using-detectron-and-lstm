@@ -20,13 +20,16 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = "secret key"
 
 
-# Detectron2 config
 start = time.time()
+# obtain detectron2's default config
 cfg = get_cfg()
+# load the pre trained model from Detectron2 model zoo
 cfg.merge_from_file(model_zoo.get_config_file("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml"))
-cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5  # set threshold for this model
-# Find a model from detectron2's model zoo. You can use the https://dl.fbaipublicfiles... url as well
+# set confidence threshold for this model
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
+# load model weights
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml")
+# create the predictor for pose estimation using the config
 pose_detector = DefaultPredictor(cfg)
 model_load_done = time.time()
 print("Detectron model loaded in ", model_load_done - start)
@@ -113,8 +116,10 @@ def get_result_video(filename):
     return Response(stream, mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
+# route definition for video upload for analysis
 @app.route('/analyze/<filename>')
 def analyze(filename):
+    # invokes method analyse_video
     return Response(analyse_video(pose_detector, lstm_classifier, filename), mimetype='text/event-stream')
 
 
