@@ -97,7 +97,7 @@ def analyse_video(pose_detector, lstm_classifier, video_path):
         # add predicted label into the frame
         if label is not None:
             cv2.putText(img, 'Action: {}'.format(label),
-                        (int(width-600), height-50), cv2.FONT_HERSHEY_COMPLEX, 0.9, (102, 255, 255), 2)
+                        (int(width-670), height-50), cv2.FONT_HERSHEY_COMPLEX, 0.9, (102, 255, 255), 2)
         # increment counter
         counter += 1
         # write the frame into the result video
